@@ -5,7 +5,7 @@ function createLayout() {
           </ul>`;
 }
 
-export default class PointsList {
+export default class PointsListView {
   getTemplate() {
     return createLayout();
   }

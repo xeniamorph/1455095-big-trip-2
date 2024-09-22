@@ -29,7 +29,7 @@ function createLayout() {
           </form>`;
 }
 
-export default class Sort {
+export default class SortView {
   getTemplate() {
     return createLayout();
   }
