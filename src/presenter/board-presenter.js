@@ -1,10 +1,10 @@
 
 import {render} from '/src/render.js';
-import EditPointView from '/src/view/EditPointView';
-import FilterView from '/src/view/FilterView';
-import SortView from '/src/view/SortView';
-import PointsListView from '/src/view/PointsListView';
-import PointItemView from '/src/view/PointItemView';
+import EditPointView from '/src/view/edit-point-view';
+import FilterView from '/src/view/filter-view';
+import SortView from '/src/view/sort-view';
+import PointsListView from '/src/view/points-list-view';
+import PointItemView from '/src/view/point-Item-view';
 
 const siteBodySection = document.querySelector('.page-body');
 const siteFilterSection = siteBodySection.querySelector('.trip-controls__filters');
