@@ -26,7 +26,7 @@ function createLayout() {
           </form>`;
 }
 
-export default class Filter {
+export default class FilterView {
   getTemplate() {
     return createLayout();
   }

@@ -41,7 +41,7 @@ function createLayout() {
   </li>`;
 }
 
-export default class PointItem {
+export default class PointItemView {
   getTemplate() {
     return createLayout();
   }
