@@ -32,7 +32,11 @@ export default class Presenter {
     render(new EditPointView(), this.pointListComponent.getElement());
 
     for (let i = 0; i < this.points.length; i++) {
-      render(new PointItemView({point: this.points[i]}), this.pointListComponent.getElement());
+      render(new PointItemView({
+        pointModel: this.points[i],
+        destinationsModel: this.destinations,
+        offersModel: this.offers,
+      }), this.pointListComponent.getElement());
     }
 
   }

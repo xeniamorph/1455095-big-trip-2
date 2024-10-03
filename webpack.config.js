@@ -10,6 +10,16 @@ module.exports = {
     clean: true,
   },
   devtool: 'source-map',
+  mode: 'development',  // Добавлено
+  devServer: {          // Добавлено
+    static: {
+      directory: path.resolve(__dirname, 'build'),
+    },
+    compress: true,
+    port: 9000,
+    hot: true,  // Включает горячую перезагрузку (HMR)
+    open: true, // Открывает браузер при запуске сервера
+  },
   plugins: [
     new HtmlPlugin({
       template: 'public/index.html',
