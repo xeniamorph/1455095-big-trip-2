@@ -1,6 +1,100 @@
 import { createElement } from '../render';
+import { typeIcons } from '/src/const.js';
+import { getFormattedEditDateTime } from '../utils';
 
-function createLayout() {
+const BLANK_POINT = {
+  'id': null,
+  'base_price': 0,
+  'date_from': '2023-01-01T00:00:00.000Z',
+  'date_to': '2023-01-01T00:00:00.000Z',
+  'destination': null,
+  'is_favorite': false,
+  'offers': null,
+  'type': null,
+};
+
+function createLayout(point, destinationsModel, offersModel) {
+  const {
+    base_price: basePrice,
+    date_from: dateFrom,
+    date_to: dateTo,
+    destination,
+    offers,
+    type
+  } = point;
+
+  let nameOfdestination = null;
+
+  if (destination) {
+    destinationsModel.forEach((element) => {
+      if (destination === element.id) {
+        nameOfdestination = element.name;
+      }
+    });
+  }
+
+  function getOfferTemplate(){
+    let allOffersWithSelected = [];
+
+    offersModel.forEach((offerModel) => {
+      if (offerModel.type === type) {
+        const currentTypeOffersModel = offerModel.offers;
+
+        allOffersWithSelected = [...currentTypeOffersModel];
+
+        allOffersWithSelected.forEach((item) => {
+          if (offers.includes(item.id)) {
+            item.checked = true;
+          } else {
+            item.checked = false;
+          }
+        });
+
+      }
+    });
+
+    return allOffersWithSelected.map((item) =>
+      `<div class="event__offer-selector">
+        <input class="event__offer-checkbox  visually-hidden" id="${item.id}" type="checkbox"  name="${item.title.toLowerCase().trim().replace(/\s+/g, '-')}" ${item.checked ? 'checked' : ''}>
+        <label class="event__offer-label" for="${item.id}">
+          <span class="event__offer-title">${item.title}</span>
+          &plus;&euro;&nbsp;
+          <span class="event__offer-price">${item.price}</span>
+        </label>
+      </div>`
+    ).join('');
+  }
+
+  function getDestinationDesc(){
+    if (destination) {
+      let descOfdestination = null;
+      destinationsModel.forEach((element) => {
+        if (destination === element.id) {
+          descOfdestination = element.description;
+        }
+      });
+
+      return descOfdestination;
+    }
+  }
+
+  function getDestinationPictures(){
+    if (destination) {
+      let destinationPictures = null;
+
+      destinationsModel.forEach((element) => {
+        if (destination === element.id) {
+          destinationPictures = element.pictures;
+        }
+      });
+
+      return destinationPictures.map((item) =>
+        `<img class="event__photo" src="${item.src}" alt="Event photo">`
+      ).join('');
+    }
+  }
+
+
   return `
     <li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
@@ -8,7 +102,7 @@ function createLayout() {
           <div class="event__type-wrapper">
             <label class="event__type  event__type-btn" for="event-type-toggle-1">
               <span class="visually-hidden">Choose event type</span>
-              <img class="event__type-icon" width="17" height="17" src="img/icons/flight.png" alt="Event type icon">
+              <img class="event__type-icon" width="17" height="17" src="${type ? typeIcons[type] : typeIcons[null]}" alt="Event type icon">
             </label>
             <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -66,22 +160,21 @@ function createLayout() {
 
           <div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-1">
-              Flight
+              ${point.type ? point.type : ''}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="Chamonix" list="destination-list-1">
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination ? nameOfdestination : ''}" list="destination-list-1">
             <datalist id="destination-list-1">
-              <option value="Amsterdam"></option>
-              <option value="Geneva"></option>
-              <option value="Chamonix"></option>
+              ${destinationsModel.map((item) => `<option value="${item.name}"></option>`)}
+
             </datalist>
           </div>
 
           <div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-1">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="18/03/19 12:25">
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${getFormattedEditDateTime(dateFrom)}">
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">To</label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="18/03/19 13:35">
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${getFormattedEditDateTime(dateTo)}">
           </div>
 
           <div class="event__field-group  event__field-group--price">
@@ -89,7 +182,7 @@ function createLayout() {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="160">
+            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice ? basePrice : 0}">
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -103,56 +196,23 @@ function createLayout() {
             <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
             <div class="event__available-offers">
-              <div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
-                <label class="event__offer-label" for="event-offer-luggage-1">
-                  <span class="event__offer-title">Add luggage</span>
-                  &plus;&euro;&nbsp;
-                  <span class="event__offer-price">50</span>
-                </label>
-              </div>
-
-              <div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-1" type="checkbox" name="event-offer-comfort" checked>
-                <label class="event__offer-label" for="event-offer-comfort-1">
-                  <span class="event__offer-title">Switch to comfort</span>
-                  &plus;&euro;&nbsp;
-                  <span class="event__offer-price">80</span>
-                </label>
-              </div>
-
-              <div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-1" type="checkbox" name="event-offer-meal">
-                <label class="event__offer-label" for="event-offer-meal-1">
-                  <span class="event__offer-title">Add meal</span>
-                  &plus;&euro;&nbsp;
-                  <span class="event__offer-price">15</span>
-                </label>
-              </div>
-
-              <div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-seats-1" type="checkbox" name="event-offer-seats">
-                <label class="event__offer-label" for="event-offer-seats-1">
-                  <span class="event__offer-title">Choose seats</span>
-                  &plus;&euro;&nbsp;
-                  <span class="event__offer-price">5</span>
-                </label>
-              </div>
-
-              <div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-train-1" type="checkbox" name="event-offer-train">
-                <label class="event__offer-label" for="event-offer-train-1">
-                  <span class="event__offer-title">Travel by train</span>
-                  &plus;&euro;&nbsp;
-                  <span class="event__offer-price">40</span>
-                </label>
-              </div>
+              ${offers ? getOfferTemplate() : ''}
             </div>
           </section>
 
           <section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description">Chamonix-Mont-Blanc (usually shortened to Chamonix) is a resort area near the junction of France, Switzerland and Italy. At the base of Mont Blanc, the highest summit in the Alps, it's renowned for its skiing.</p>
+            <p class="event__destination-description"> ${destination ? getDestinationDesc() : ''}</p>
+          </section>
+          <section class="event__section  event__section--destination">
+            <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+            <p class="event__destination-description">Geneva is a city in Switzerland that lies at the southern tip of expansive Lac Léman (Lake Geneva). Surrounded by the Alps and Jura mountains, the city has views of dramatic Mont Blanc.</p>
+
+            <div class="event__photos-container">
+              <div class="event__photos-tape">
+                ${destination ? getDestinationPictures() : ''}
+              </div>
+            </div>
           </section>
         </section>
       </form>
@@ -160,9 +220,15 @@ function createLayout() {
   `;
 }
 
-export default class EditPointView {
+export default class PointEditView {
+  constructor ({pointModel = BLANK_POINT, destinationsModel, offersModel }){
+    this.point = pointModel;
+    this.destinations = destinationsModel;
+    this.offers = offersModel;
+  }
+
   getTemplate() {
-    return createLayout();
+    return createLayout(this.point, this.destinations, this.offers);
   }
 
   getElement() {

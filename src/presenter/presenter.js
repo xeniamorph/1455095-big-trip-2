@@ -1,6 +1,6 @@
 
 import { render } from '/src/render.js';
-import EditPointView from '/src/view/edit-point-view';
+import PointEditView from '/src/view/point-edit-view';
 import FilterView from '/src/view/filter-view';
 import SortView from '/src/view/sort-view';
 import PointsListView from '/src/view/points-list-view';
@@ -29,7 +29,12 @@ export default class Presenter {
     render(new FilterView(), siteFilterSection);
     render(new SortView(), siteContentSection);
     render(this.pointListComponent, this.pointsContainer);
-    render(new EditPointView(), this.pointListComponent.getElement());
+    render(new PointEditView(
+      {
+        pointModel: this.points[0],
+        destinationsModel: this.destinations,
+        offersModel: this.offers,}
+    ), this.pointListComponent.getElement());
 
     for (let i = 0; i < this.points.length; i++) {
       render(new PointItemView({

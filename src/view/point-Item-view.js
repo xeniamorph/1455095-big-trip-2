@@ -1,7 +1,13 @@
 import { createElement } from '/src/render.js';
-import { getFormattedEventDay, getFormattedAttrEventDay, getFormattedTimeEvent, getFormattedAttrDatatimeEvent} from '../utils';
-import { typeIcons } from '/src/const.js';
 
+import { getFormattedEventDay,
+  getFormattedAttrEventDay,
+  getFormattedTimeEvent,
+  getFormattedAttrDatatimeEvent,
+  getTimeDuration
+} from '../utils';
+
+import { typeIcons } from '/src/const.js';
 
 function createLayout(pointModel, destinationsModel, offersModel) {
   const {
@@ -20,16 +26,16 @@ function createLayout(pointModel, destinationsModel, offersModel) {
   const eventDayAttr = getFormattedAttrEventDay(dateFrom);
   const eventTimeStartAttr = getFormattedAttrDatatimeEvent(dateFrom);
   const eventTimeEndAttr = getFormattedAttrDatatimeEvent(dateTo);
+  const timeDurationInMinutes = getTimeDuration(dateFrom, dateTo);
 
-  let nameOfdestination;
+  let nameOfdestination = null;
+  let selectedOffers = [];
 
   destinationsModel.forEach((element) => {
     if (destination === element.id) {
       nameOfdestination = element.name;
     }
   });
-
-  let selectedOffers = [];
 
   offersModel.forEach((offerModel) => {
     if (offerModel.type === type) {
@@ -39,7 +45,6 @@ function createLayout(pointModel, destinationsModel, offersModel) {
         const mathedOffer = currentTypeOffersModel.find((element) => element.id === id);
         return mathedOffer;
       });
-
     }
   });
 
@@ -57,7 +62,7 @@ function createLayout(pointModel, destinationsModel, offersModel) {
                 &mdash;
                 <time class="event__end-time" datetime="${eventTimeEndAttr}">${eventTimeEnd}</time>
               </p>
-              <p class="event__duration">40M</p>
+              <p class="event__duration">${timeDurationInMinutes}</p>
             </div>
             <p class="event__price">
               &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
@@ -70,7 +75,7 @@ function createLayout(pointModel, destinationsModel, offersModel) {
                 &plus;&euro;&nbsp;
                 <span class="event__offer-price">${item.price}</span>
               </li>
-            `)}
+            `).join('')}
             </ul>
             <button class="event__favorite-btn ${isFavorite ? 'event__favorite-btn--active' : ''} " type="button">
               <span class="visually-hidden">Add to favorite</span>

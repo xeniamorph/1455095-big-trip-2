@@ -8,6 +8,7 @@ const typeIcons = {
   'check-in': 'img/icons/check-in.png',
   sightseeing: 'img/icons/sightseeing.png',
   restaurant: 'img/icons/restaurant.png',
+  null: 'img/icons/transport.png',
 };
 
 
