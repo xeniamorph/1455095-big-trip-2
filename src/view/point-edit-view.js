@@ -13,7 +13,7 @@ const BLANK_POINT = {
   'type': null,
 };
 
-function createLayout(point, destinationsModel, offersModel) {
+function createLayout(point, destinationsData, offersData) {
   const {
     base_price: basePrice,
     date_from: dateFrom,
@@ -26,7 +26,7 @@ function createLayout(point, destinationsModel, offersModel) {
   let nameOfdestination = null;
 
   if (destination) {
-    destinationsModel.forEach((element) => {
+    destinationsData.forEach((element) => {
       if (destination === element.id) {
         nameOfdestination = element.name;
       }
@@ -36,11 +36,11 @@ function createLayout(point, destinationsModel, offersModel) {
   function getOfferTemplate(){
     let allOffersWithSelected = [];
 
-    offersModel.forEach((offerModel) => {
-      if (offerModel.type === type) {
-        const currentTypeOffersModel = offerModel.offers;
+    offersData.forEach((offerData) => {
+      if (offerData.type === type) {
+        const currentTypeOffersData = offerData.offers;
 
-        allOffersWithSelected = [...currentTypeOffersModel];
+        allOffersWithSelected = [...currentTypeOffersData];
 
         allOffersWithSelected.forEach((item) => {
           if (offers.includes(item.id)) {
@@ -68,7 +68,7 @@ function createLayout(point, destinationsModel, offersModel) {
   function getDestinationDesc(){
     if (destination) {
       let descOfdestination = null;
-      destinationsModel.forEach((element) => {
+      destinationsData.forEach((element) => {
         if (destination === element.id) {
           descOfdestination = element.description;
         }
@@ -82,7 +82,7 @@ function createLayout(point, destinationsModel, offersModel) {
     if (destination) {
       let destinationPictures = null;
 
-      destinationsModel.forEach((element) => {
+      destinationsData.forEach((element) => {
         if (destination === element.id) {
           destinationPictures = element.pictures;
         }
@@ -164,7 +164,7 @@ function createLayout(point, destinationsModel, offersModel) {
             </label>
             <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination ? nameOfdestination : ''}" list="destination-list-1">
             <datalist id="destination-list-1">
-              ${destinationsModel.map((item) => `<option value="${item.name}"></option>`)}
+              ${destinationsData.map((item) => `<option value="${item.name}"></option>`)}
 
             </datalist>
           </div>
@@ -221,10 +221,10 @@ function createLayout(point, destinationsModel, offersModel) {
 }
 
 export default class PointEditView {
-  constructor ({pointModel = BLANK_POINT, destinationsModel, offersModel }){
-    this.point = pointModel;
-    this.destinations = destinationsModel;
-    this.offers = offersModel;
+  constructor ({pointData = BLANK_POINT, destinationsData, offersData }){
+    this.point = pointData;
+    this.destinations = destinationsData;
+    this.offers = offersData;
   }
 
   getTemplate() {

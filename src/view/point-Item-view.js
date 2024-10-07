@@ -9,7 +9,7 @@ import { getFormattedEventDay,
 
 import { typeIcons } from '/src/const.js';
 
-function createLayout(pointModel, destinationsModel, offersModel) {
+function createLayout(pointData, destinationsData, offersData) {
   const {
     base_price: basePrice,
     date_from: dateFrom,
@@ -18,7 +18,7 @@ function createLayout(pointModel, destinationsModel, offersModel) {
     is_favorite: isFavorite,
     offers,
     type
-  } = pointModel;
+  } = pointData;
 
   const eventDay = getFormattedEventDay(dateFrom);
   const eventTimeStart = getFormattedTimeEvent(dateFrom);
@@ -31,18 +31,18 @@ function createLayout(pointModel, destinationsModel, offersModel) {
   let nameOfdestination = null;
   let selectedOffers = [];
 
-  destinationsModel.forEach((element) => {
+  destinationsData.forEach((element) => {
     if (destination === element.id) {
       nameOfdestination = element.name;
     }
   });
 
-  offersModel.forEach((offerModel) => {
-    if (offerModel.type === type) {
-      const currentTypeOffersModel = offerModel.offers;
+  offersData.forEach((offerData) => {
+    if (offerData.type === type) {
+      const currentTypeOffersData = offerData.offers;
 
       selectedOffers = offers.map((id) => {
-        const mathedOffer = currentTypeOffersModel.find((element) => element.id === id);
+        const mathedOffer = currentTypeOffersData.find((element) => element.id === id);
         return mathedOffer;
       });
     }
@@ -92,14 +92,14 @@ function createLayout(pointModel, destinationsModel, offersModel) {
 }
 
 export default class PointItemView {
-  constructor({pointModel, destinationsModel, offersModel}){
-    this.pointModel = pointModel;
-    this.destinationsModel = destinationsModel;
-    this.offersModel = offersModel;
+  constructor({pointData, destinationsData, offersData}){
+    this.pointData = pointData;
+    this.destinationsData = destinationsData;
+    this.offersData = offersData;
   }
 
   getTemplate() {
-    return createLayout(this.pointModel, this.destinationsModel, this.offersModel);
+    return createLayout(this.pointData, this.destinationsData, this.offersData);
   }
 
   getElement() {

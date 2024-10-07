@@ -31,16 +31,16 @@ export default class Presenter {
     render(this.pointListComponent, this.pointsContainer);
     render(new PointEditView(
       {
-        pointModel: this.points[0],
-        destinationsModel: this.destinations,
-        offersModel: this.offers,}
+        pointData: this.points[0],
+        destinationsData: this.destinations,
+        offersData: this.offers,}
     ), this.pointListComponent.getElement());
 
     for (let i = 0; i < this.points.length; i++) {
       render(new PointItemView({
-        pointModel: this.points[i],
-        destinationsModel: this.destinations,
-        offersModel: this.offers,
+        pointData: this.points[i],
+        destinationsData: this.destinations,
+        offersData: this.offers,
       }), this.pointListComponent.getElement());
     }
 
